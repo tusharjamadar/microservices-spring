@@ -3,6 +3,7 @@ package com.tushar.product_service.service;
 import com.tushar.product_service.dto.ProductRequest;
 import com.tushar.product_service.dto.ProductResponse;
 import com.tushar.product_service.entity.Product;
+import com.tushar.product_service.exception.ProductServiceCustomException;
 import com.tushar.product_service.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -53,5 +54,16 @@ public class ProductServiceImpl implements ProductService{
                 .price(product.getPrice())
                 .quantity(product.getQuantity())
                 .build();
+    }
+
+    @Override
+    public void reduceQuantity(Long productId, Long quantity) {
+        Product product = productRepository.findById(productId).orElseThrow(()-> new ProductServiceCustomException("Product Not Found with Id: "+ productId, "PRODUCT_NOT_FOUND"));
+
+        if(product.getQuantity() < quantity){
+            throw new ProductServiceCustomException("Product does not have sufficient Quantity.", "INSUFFICIENT_QUANTITY");
+        }
+        product.setQuantity(product.getQuantity() - quantity);
+        productRepository.save(product);
     }
 }

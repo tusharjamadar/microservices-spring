@@ -3,6 +3,7 @@ package com.tushar.order_service.service;
 import com.tushar.order_service.dto.OrderRequest;
 import com.tushar.order_service.dto.OrderResponse;
 import com.tushar.order_service.entity.Order;
+import com.tushar.order_service.external.client.ProductService;
 import com.tushar.order_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -18,9 +19,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderServiceImp implements OrderService{
     private final OrderRepository orderRepository;
+    private final ProductService productService;
 
     @Override
     public Long placeOrder(OrderRequest orderRequest) {
+
+        productService.reduceQuantity(orderRequest.getProductId(), orderRequest.getQuantity());
+
         Order order = Order.builder()
                 .productId(orderRequest.getProductId())
                 .quantity(orderRequest.getQuantity())
