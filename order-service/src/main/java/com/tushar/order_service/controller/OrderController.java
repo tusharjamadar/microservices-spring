@@ -2,6 +2,7 @@ package com.tushar.order_service.controller;
 
 import com.tushar.order_service.dto.OrderRequest;
 import com.tushar.order_service.dto.OrderResponse;
+import com.tushar.order_service.external.exeption.CustomException;
 import com.tushar.order_service.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -33,7 +34,7 @@ public class OrderController {
     public ResponseEntity<OrderResponse> getOrderById(@PathVariable Long id){
         OrderResponse orderResponse = orderService.getOrderById(id);
 
-        if(orderResponse == null)throw new RuntimeException("Order with id: " + id + " not found.");
+        if(orderResponse == null)throw new CustomException("Order with id: " + id + " not found.", "NOT_FOUND",404);
         return ResponseEntity.ok(orderResponse);
     }
 }
